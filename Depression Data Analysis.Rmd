@@ -1,0 +1,21 @@
+---
+title: "Depression Data Analysis"
+author: "Becca DeCamp"
+date: "10/7/2017"
+output: html_document
+---
+
+```{r}
+remove(da36147.0001)
+remove(da36147.0004)
+
+newdata <- merge(da36147.0003, da36147.0005, by = c("HHX", "FPX"), all = TRUE)
+head(newdata)
+
+dep <- merge(newdata, da36147.0008, by = c("HHX", "FPX"), all = TRUE)
+head(dep)
+tail(dep)
+
+library(dplyr)
+```
+
