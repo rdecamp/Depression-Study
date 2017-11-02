@@ -5,7 +5,7 @@ date: "10/7/2017"
 output: html_document
 ---
 To start off, I loaded all of the data frames from the internet in to R (there are three separate data frames in total that I am pulling from). 
-Then, using the merge() function, I was able to concatenate those data frames in to one in two simple lines of code. 
+<br>Then, using the merge() function, I was able to concatenate those data frames in to one in two simple lines of code. 
 
 ```{r}
 newdata <- merge(da36147.0003, da36147.0005, by = c("HHX", "FPX"), all = TRUE)
