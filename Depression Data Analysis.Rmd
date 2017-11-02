@@ -8,6 +8,16 @@ To start off, I loaded all of the data frames from the internet in to R (there a
 <br>Then, using the merge() function, I was able to concatenate those data frames in to one in two simple lines of code. 
 
 ```{r}
+
+save(da36147.0003, file = "da36147.0003.RData")
+load(file = "da36147.0003.RData")
+
+save(da36147.0005, file = "da36147.0005.RData")
+load(file = "da36147.0005.RData")
+
+save(da36147.0008, file = "da36147.0008.RData")
+load(file = "da36147.0008.RData")
+
 newdata <- merge(da36147.0003, da36147.0005, by = c("HHX", "FPX"), all = TRUE)
 head(newdata)
 
