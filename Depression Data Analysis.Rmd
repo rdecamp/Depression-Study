@@ -4,19 +4,20 @@ author: "Becca DeCamp"
 date: "10/7/2017"
 output: html_document
 ---
-To start off, I loaded all of the data frames from the internet in to R (there are three separate data frames in total that I am pulling from). 
-<br>Then, using the merge() function, I was able to concatenate those data frames in to one in two simple lines of code. 
+
+I downloaded the data in an R data format directly off the online data repository I found it on. Here, I am loading that data in to R. As you see, I am pulling data from three different datasets in to this study, because the data was split up in to several different data frames (this is because it is a LOT of data). 
 
 ```{r}
+get(load(file = "da36147.0003.rda"))
 
-save(da36147.0003, file = "da36147.0003.RData")
-load(file = "da36147.0003.RData")
+get(load(file = "da36147.0005.rda"))
 
-save(da36147.0005, file = "da36147.0005.RData")
-load(file = "da36147.0005.RData")
+get(load(file = "da36147.0008.rda"))
 
-save(da36147.0008, file = "da36147.0008.RData")
-load(file = "da36147.0008.RData")
+```
+
+Now, I am concatenating the data in to one data frame (i.e. not only shoving all the data together, but aligning the data by the columns that the datasets have in common so the data for each person is aligned in one single row). I concatenated by household number, and by person number in that household. 
+```{r}
 
 newdata <- merge(da36147.0003, da36147.0005, by = c("HHX", "FPX"), all = TRUE)
 head(newdata)
@@ -27,7 +28,7 @@ tail(dep)
 
 ```
 
-As you can see, we got all the data in the place where we want it, but there's still way too much of it! Now we will filter the data and pull out only the columns we need from the 900-some columns that exist in the framework now. 
+As you can see, now we got all the data in to one place, but there's still way too much of it! Now I will filter the data and pull out only the columns we need from the 900-some columns that currently exist in the framework. 
 
 ```{r}
 library(dplyr)
