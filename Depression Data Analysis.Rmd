@@ -4,11 +4,10 @@ author: "Becca DeCamp"
 date: "10/7/2017"
 output: html_document
 ---
+To start off, I loaded all of the data frames from the internet in to R (there are three separate data frames in total that I am pulling from). 
+Then, using the merge() function, I was able to concatenate those data frames in to one in two simple lines of code. 
 
 ```{r}
-remove(da36147.0001)
-remove(da36147.0004)
-
 newdata <- merge(da36147.0003, da36147.0005, by = c("HHX", "FPX"), all = TRUE)
 head(newdata)
 
@@ -16,6 +15,11 @@ dep <- merge(newdata, da36147.0008, by = c("HHX", "FPX"), all = TRUE)
 head(dep)
 tail(dep)
 
+```
+
+As you can see, we got all the data in the place where we want it, but there's still way too much of it! Now we will filter the data and pull out only the columns we need from the 900-some columns that exist in the framework now. 
+
+```{r}
 library(dplyr)
 ```
 
