@@ -33,5 +33,10 @@ As you can see, now we got all the data in to one place, but there's still way t
 ```{r}
 library(dplyr)
 
+newdep <- select(dep, HHX, FPX, SEX.x, HISPAN_I.x, RACERPI2.x, MRACRPI2.x, MRACBPI2.x, RACRECI3, HISCODI3, AGE_P.x, MHIBOY2, MHIGRL2, CMHAGF15, RSCL2_E2, RSCL3_E3, PRESCP6M, PRESHELP, ANX_1, ANX_2, ANX_3R, DEP_1, DEP_2, DEP_3R)
+
+head(newdep)
 ```
+
+NOW THAT WE FINALLY HAVE OUR GoTDAMN DATA, THE REAL FUN CAN BEGIN
 
