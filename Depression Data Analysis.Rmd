@@ -5,38 +5,78 @@ date: "10/7/2017"
 output: html_document
 ---
 
-I downloaded the data in an R data format directly off the online data repository I found it on. Here, I am loading that data in to R. As you see, I am pulling data from three different datasets in to this study, because the data was split up in to several different data frames (this is because it is a LOT of data). 
+I downloaded the data in an R data format directly off the online data repository I found it on. Here, I am loading that data in to R. As you see, I am pulling data from four different datasets in to this study, because the data was split up in to several different data frames (this is because it is a LOT of data). 
 
-```{r}
-get(load(file = "da36147.0003.rda"))
+```{r, results='hide'}
+get(load(file = "36147-0003-Data.rda"))
 
 get(load(file = "da36147.0005.rda"))
 
 get(load(file = "da36147.0008.rda"))
 
+get(load(file = "36147-0002-Data.rda"))
+
 ```
 
 Now, I am concatenating the data in to one data frame (i.e. not only shoving all the data together, but aligning the data by the columns that the datasets have in common so the data for each person is aligned in one single row). I concatenated by household number, and by person number in that household. 
-```{r}
+```{r, results='hide'}
+library(dplyr)
 
 newdata <- merge(da36147.0003, da36147.0005, by = c("HHX", "FPX"), all = TRUE)
 head(newdata)
 
 dep <- merge(newdata, da36147.0008, by = c("HHX", "FPX"), all = TRUE)
-head(dep)
-tail(dep)
+
+
+depr <- merge(dep, da36147.0002, all = TRUE)
+#note that da36147.0002 didn't have the FPX variable. Not sure what that will do to our data until I filter out all the stuff I don't need. 
+
+head(depr)
+tail(depr)
+
 
 ```
 
-As you can see, now we got all the data in to one place, but there's still way too much of it! Now I will filter the data and pull out only the columns we need from the 900-some columns that currently exist in the framework. 
+As you can see, now we got all the data in to one place, but there's still way too much of it! Now I will filter the data and pull out only the columns we need from the 1000-some columns that currently exist in the dataframe. I will do this using tidyr and dplyr. 
 
 ```{r}
 library(dplyr)
+library(tidyr)
 
-newdep <- select(dep, HHX, FPX, SEX.x, HISPAN_I.x, RACERPI2.x, MRACRPI2.x, MRACBPI2.x, RACRECI3, HISCODI3, AGE_P.x, MHIBOY2, MHIGRL2, CMHAGF15, RSCL2_E2, RSCL3_E3, PRESCP6M, PRESHELP, ANX_1, ANX_2, ANX_3R, DEP_1, DEP_2, DEP_3R)
-
+#only selecting the columns I want
+newdep <- select(depr, HHX, FPX, SEX.x, AGE_P.x, HISCODI3, PARENTS, MOM_ED, DAD_ED, INCGRP2, INCGRP3, RAT_CAT2, RAT_CAT3, RSCL3_E3, DEP_1)
 head(newdep)
+
+#merging the child depression columns and the adult depression columns 
+newdep <- unite(newdep, DEPMAIN, c(RSCL3_E3, DEP_1), remove=TRUE)
+head(newdep)
+
+#filtering out only 10-24 year olds. This is the age range that the WHO gives as "adolescent"
+newdep1 <- filter(newdep, AGE_P.x == c(10:24))
+head(newdep1)
+
 ```
 
-NOW THAT WE FINALLY HAVE OUR GoTDAMN DATA, THE REAL FUN CAN BEGIN
+There's a few more things that I need to do to clean up my data... First, I'm going to transform the depression data I have in to 1's and 0's (i.e. if a person does have depression of ANY severity, they get a 1, and if they don't they get a 0). I'm going to do this by changing each depression value type individually, as you will see below. Just for shits and giggles, I also want to see how big my depressed sample is to make sure I don't have to choose my analyses with small sample sizes in mind. I'm gonna just filter all of the depressed people out and look at the total count after I transform the data. 
 
+```{r}
+
+#changing the values for all people with depression
+newdep1$DEPMAIN[newdep1$DEPMAIN == "(1) Somewhat true_NA"] <- 1
+newdep1$DEPMAIN[newdep1$DEPMAIN == "NA_(1) Daily"] <- 1
+newdep1$DEPMAIN[newdep1$DEPMAIN == "(2) Certainly true_NA"] <- 1
+newdep1$DEPMAIN[newdep1$DEPMAIN == "NA_(2) Weekly"] <- 1
+newdep1$DEPMAIN[newdep1$DEPMAIN == "NA_(3) Monthly"] <- 1
+newdep1$DEPMAIN[newdep1$DEPMAIN == "NA_(4) A few times a year"] <- 1
+
+#changing the values for all people without depression
+newdep1$DEPMAIN[newdep1$DEPMAIN == "NA_(5) Never"] <- 0
+newdep1$DEPMAIN[newdep1$DEPMAIN == "NA_NA"] <- 0
+newdep1$DEPMAIN[newdep1$DEPMAIN == "(0) Not true_NA"] <- 0
+
+#filtering the depressed people just to see my sample size... which is 77! Perfect!
+newdep2 <- filter(newdep1, DEPMAIN == 1)
+
+```
+
+The only thing to do now is get the income group data to align... I may just have to insert it manually at this point...
