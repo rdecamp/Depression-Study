@@ -44,8 +44,10 @@ library(dplyr)
 library(tidyr)
 
 #only selecting the columns I want
-newdep <- select(depr, HHX, FPX, SEX.x, AGE_P.x, HISCODI3, PARENTS, MOM_ED, DAD_ED, INCGRP2, INCGRP3, RAT_CAT2, RAT_CAT3, RSCL3_E3, DEP_1)
+newdep <- select(depr, HHX, FPX, SEX.x, AGE_P.x, HISCODI3, PARENTS, MOM_ED, DAD_ED, RSCL3_E3, DEP_1)
 head(newdep)
+
+#I didn't select the income columns because they're giving me issues. (The one that I would like to use if I can get it is INCGRP3)
 
 #merging the child depression columns and the adult depression columns 
 newdep <- unite(newdep, DEPMAIN, c(RSCL3_E3, DEP_1), remove=TRUE)
@@ -74,9 +76,86 @@ newdep1$DEPMAIN[newdep1$DEPMAIN == "NA_(5) Never"] <- 0
 newdep1$DEPMAIN[newdep1$DEPMAIN == "NA_NA"] <- 0
 newdep1$DEPMAIN[newdep1$DEPMAIN == "(0) Not true_NA"] <- 0
 
-#filtering the depressed people just to see my sample size... which is 77! Perfect!
+#filtering the depressed people just to see my depression sample size... which is 77! Perfect!
 newdep2 <- filter(newdep1, DEPMAIN == 1)
 
 ```
 
-The only thing to do now is get the income group data to align... I may just have to insert it manually at this point...
+The only thing to do now is get the income group data to align... I may just have to insert those manually at this point...
+Right now, since I can't graph anything because the variables are all categorical, Poisson, or Binomial, I'm just gonna try out some quick and dirty regression models using my data to see if we get anything. 
+
+```{r}
+#baseline test
+test0 <- lm(data = newdep1, DEPMAIN ~ 1)
+summary(test0)
+
+test1 <- lm(data = newdep1, DEPMAIN ~ SEX.x)
+summary(test1)
+#nothing significant...
+
+test2 <- lm(data = newdep1, DEPMAIN ~ HISCODI3)
+summary(test2)
+#nothing significant...
+
+test3 <-  lm(data = newdep1, DEPMAIN ~ PARENTS)
+summary(test3)
+#neither mother nor father is significant?.... hmmm....
+
+test4 <-  lm(data = newdep1, DEPMAIN ~ MOM_ED)
+summary(test4)
+#nothing...
+
+test5 <-  lm(data = newdep1, DEPMAIN ~ DAD_ED)
+summary(test5)
+
+#Interaction models, just to see...
+test6 <-  lm(data = newdep1, DEPMAIN ~ HISCODI3+SEX.x)
+summary(test6)
+#nope
+
+test7 <-  lm(data = newdep1, DEPMAIN ~ HISCODI3+PARENTS)
+summary(test7)
+#neither mother nor father is significant again??
+
+test8 <-  lm(data = newdep1, DEPMAIN ~ SEX.x+PARENTS)
+summary(test8)
+#again "neither mother nor father" is the only one that is significant. 
+
+test9 <-  lm(data = newdep1, DEPMAIN ~ HISCODI3*SEX.x)
+summary(test9)
+
+test10 <-  lm(data = newdep1, DEPMAIN ~ HISCODI3+PARENTS)
+summary(test10)
+
+#none of these are showing ANYTHING significant, which is depressing as hell....
+```
+
+So far this isnt looking great, but I think it's because the data all has non-continuous data. There are still a few things we can do to this though, like re-leveling our variables and using General Linear Models. So let's try that!
+<br>First, let's try releveling. 
+```{r}
+newdep1$SEX.x <- relevel(newdep1$SEX.x, ref = "(2) Female")
+m <- lm(data = newdep1, DEPMAIN ~ SEX.x)
+summary(m)
+
+m1 <- lm(data = newdep1, DEPMAIN ~ SEX.x*HISCODI3)
+summary(m1)
+#p-val for F statistic
+
+p <- 1 - pf(1.65, df1 = 1, df2 = 1414)
+p
+#Still nothing....  
+```
+
+We're getting not great P-values so I don't think we're using an appropriate model for the data, so let's try GLM. 
+
+```{r}
+newdep1$SEX.x <- as.numeric(as.character(newdep1$SEX.x))
+newdep1$DEPMAIN <- as.numeric(newdep1$DEPMAIN)
+
+glm <- glm(data = newdep1, DEPMAIN ~ SEX.x, family = "binomial")
+summary(glm)
+
+glm1 <- glm(data = newdep1, DEPMAIN ~ HISCODI3, family = "binomial")
+summary(glm1)
+```
+

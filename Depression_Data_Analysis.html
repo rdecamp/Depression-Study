@@ -157,7 +157,7 @@ tail(depr)</code></pre>
 library(tidyr)
 
 #only selecting the columns I want
-newdep &lt;- select(depr, HHX, FPX, SEX.x, AGE_P.x, HISCODI3, PARENTS, MOM_ED, DAD_ED, INCGRP2, INCGRP3, RAT_CAT2, RAT_CAT3, RSCL3_E3, DEP_1)
+newdep &lt;- select(depr, HHX, FPX, SEX.x, AGE_P.x, HISCODI3, PARENTS, MOM_ED, DAD_ED, RSCL3_E3, DEP_1)
 head(newdep)</code></pre>
 <pre><code>##      HHX  FPX      SEX.x AGE_P.x               HISCODI3
 ## 1 000001   03   (1) Male      19 (3) Non-Hispanic Black
@@ -173,21 +173,16 @@ head(newdep)</code></pre>
 ## 4 (4) Neither mother nor father                        &lt;NA&gt;
 ## 5         (3) Mother and father (4) Some college, no degree
 ## 6         (3) Mother and father (4) Some college, no degree
-##                  DAD_ED               INCGRP2               INCGRP3
-## 1                  &lt;NA&gt;                  &lt;NA&gt;                  &lt;NA&gt;
-## 2                  &lt;NA&gt; (2) $35,000 - $49,999 (2) $35,000 - $74,999
-## 3                  &lt;NA&gt;                  &lt;NA&gt;                  &lt;NA&gt;
-## 4                  &lt;NA&gt;                  &lt;NA&gt;                  &lt;NA&gt;
-## 5 (7) Bachelor's degree                  &lt;NA&gt;                  &lt;NA&gt;
-## 6 (7) Bachelor's degree                  &lt;NA&gt;                  &lt;NA&gt;
-##           RAT_CAT2         RAT_CAT3     RSCL3_E3                  DEP_1
-## 1             &lt;NA&gt;             &lt;NA&gt;         &lt;NA&gt; (4) A few times a year
-## 2 (05) 1.25 - 1.49 (05) 1.25 - 1.49         &lt;NA&gt;                   &lt;NA&gt;
-## 3             &lt;NA&gt;             &lt;NA&gt;         &lt;NA&gt;                   &lt;NA&gt;
-## 4             &lt;NA&gt;             &lt;NA&gt;         &lt;NA&gt;                   &lt;NA&gt;
-## 5             &lt;NA&gt;             &lt;NA&gt;         &lt;NA&gt;                   &lt;NA&gt;
-## 6             &lt;NA&gt;             &lt;NA&gt; (0) Not true                   &lt;NA&gt;</code></pre>
-<pre class="r"><code>#merging the child depression columns and the adult depression columns 
+##                  DAD_ED     RSCL3_E3                  DEP_1
+## 1                  &lt;NA&gt;         &lt;NA&gt; (4) A few times a year
+## 2                  &lt;NA&gt;         &lt;NA&gt;                   &lt;NA&gt;
+## 3                  &lt;NA&gt;         &lt;NA&gt;                   &lt;NA&gt;
+## 4                  &lt;NA&gt;         &lt;NA&gt;                   &lt;NA&gt;
+## 5 (7) Bachelor's degree         &lt;NA&gt;                   &lt;NA&gt;
+## 6 (7) Bachelor's degree (0) Not true                   &lt;NA&gt;</code></pre>
+<pre class="r"><code>#I didn't select the income columns because they're giving me issues. (The one that I would like to use if I can get it is INCGRP3)
+
+#merging the child depression columns and the adult depression columns 
 newdep &lt;- unite(newdep, DEPMAIN, c(RSCL3_E3, DEP_1), remove=TRUE)
 head(newdep)</code></pre>
 <pre><code>##      HHX  FPX      SEX.x AGE_P.x               HISCODI3
@@ -204,20 +199,13 @@ head(newdep)</code></pre>
 ## 4 (4) Neither mother nor father                        &lt;NA&gt;
 ## 5         (3) Mother and father (4) Some college, no degree
 ## 6         (3) Mother and father (4) Some college, no degree
-##                  DAD_ED               INCGRP2               INCGRP3
-## 1                  &lt;NA&gt;                  &lt;NA&gt;                  &lt;NA&gt;
-## 2                  &lt;NA&gt; (2) $35,000 - $49,999 (2) $35,000 - $74,999
-## 3                  &lt;NA&gt;                  &lt;NA&gt;                  &lt;NA&gt;
-## 4                  &lt;NA&gt;                  &lt;NA&gt;                  &lt;NA&gt;
-## 5 (7) Bachelor's degree                  &lt;NA&gt;                  &lt;NA&gt;
-## 6 (7) Bachelor's degree                  &lt;NA&gt;                  &lt;NA&gt;
-##           RAT_CAT2         RAT_CAT3                   DEPMAIN
-## 1             &lt;NA&gt;             &lt;NA&gt; NA_(4) A few times a year
-## 2 (05) 1.25 - 1.49 (05) 1.25 - 1.49                     NA_NA
-## 3             &lt;NA&gt;             &lt;NA&gt;                     NA_NA
-## 4             &lt;NA&gt;             &lt;NA&gt;                     NA_NA
-## 5             &lt;NA&gt;             &lt;NA&gt;                     NA_NA
-## 6             &lt;NA&gt;             &lt;NA&gt;           (0) Not true_NA</code></pre>
+##                  DAD_ED                   DEPMAIN
+## 1                  &lt;NA&gt; NA_(4) A few times a year
+## 2                  &lt;NA&gt;                     NA_NA
+## 3                  &lt;NA&gt;                     NA_NA
+## 4                  &lt;NA&gt;                     NA_NA
+## 5 (7) Bachelor's degree                     NA_NA
+## 6 (7) Bachelor's degree           (0) Not true_NA</code></pre>
 <pre class="r"><code>#filtering out only 10-24 year olds. This is the age range that the WHO gives as &quot;adolescent&quot;
 newdep1 &lt;- filter(newdep, AGE_P.x == c(10:24))</code></pre>
 <pre><code>## Warning in AGE_P.x == c(10:24): longer object length is not a multiple of
@@ -237,20 +225,13 @@ newdep1 &lt;- filter(newdep, AGE_P.x == c(10:24))</code></pre>
 ## 4         (3) Mother and father (4) Some college, no degree
 ## 5 (4) Neither mother nor father                        &lt;NA&gt;
 ## 6 (4) Neither mother nor father                        &lt;NA&gt;
-##                                   DAD_ED INCGRP2 INCGRP3 RAT_CAT2 RAT_CAT3
-## 1                  (7) Bachelor's degree    &lt;NA&gt;    &lt;NA&gt;     &lt;NA&gt;     &lt;NA&gt;
-## 2            (4) Some college, no degree    &lt;NA&gt;    &lt;NA&gt;     &lt;NA&gt;     &lt;NA&gt;
-## 3            (4) Some college, no degree    &lt;NA&gt;    &lt;NA&gt;     &lt;NA&gt;     &lt;NA&gt;
-## 4 (5) AA degree, technical or vocational    &lt;NA&gt;    &lt;NA&gt;     &lt;NA&gt;     &lt;NA&gt;
-## 5                                   &lt;NA&gt;    &lt;NA&gt;    &lt;NA&gt;     &lt;NA&gt;     &lt;NA&gt;
-## 6                                   &lt;NA&gt;    &lt;NA&gt;    &lt;NA&gt;     &lt;NA&gt;     &lt;NA&gt;
-##           DEPMAIN
-## 1 (0) Not true_NA
-## 2           NA_NA
-## 3           NA_NA
-## 4 (0) Not true_NA
-## 5  NA_(3) Monthly
-## 6           NA_NA</code></pre>
+##                                   DAD_ED         DEPMAIN
+## 1                  (7) Bachelor's degree (0) Not true_NA
+## 2            (4) Some college, no degree           NA_NA
+## 3            (4) Some college, no degree           NA_NA
+## 4 (5) AA degree, technical or vocational (0) Not true_NA
+## 5                                   &lt;NA&gt;  NA_(3) Monthly
+## 6                                   &lt;NA&gt;           NA_NA</code></pre>
 <p>There’s a few more things that I need to do to clean up my data… First, I’m going to transform the depression data I have in to 1’s and 0’s (i.e. if a person does have depression of ANY severity, they get a 1, and if they don’t they get a 0). I’m going to do this by changing each depression value type individually, as you will see below. Just for shits and giggles, I also want to see how big my depressed sample is to make sure I don’t have to choose my analyses with small sample sizes in mind. I’m gonna just filter all of the depressed people out and look at the total count after I transform the data.</p>
 <pre class="r"><code>#changing the values for all people with depression
 newdep1$DEPMAIN[newdep1$DEPMAIN == &quot;(1) Somewhat true_NA&quot;] &lt;- 1
@@ -265,9 +246,529 @@ newdep1$DEPMAIN[newdep1$DEPMAIN == &quot;NA_(5) Never&quot;] &lt;- 0
 newdep1$DEPMAIN[newdep1$DEPMAIN == &quot;NA_NA&quot;] &lt;- 0
 newdep1$DEPMAIN[newdep1$DEPMAIN == &quot;(0) Not true_NA&quot;] &lt;- 0
 
-#filtering the depressed people just to see my sample size... which is 77! Perfect!
+#filtering the depressed people just to see my depression sample size... which is 77! Perfect!
 newdep2 &lt;- filter(newdep1, DEPMAIN == 1)</code></pre>
-<p>The only thing to do now is get the income group data to align… I may just have to insert it manually at this point…</p>
+<p>The only thing to do now is get the income group data to align… I may just have to insert those manually at this point… Right now, since I can’t graph anything because the variables are all categorical, Poisson, or Binomial, I’m just gonna try out some quick and dirty regression models using my data to see if we get anything.</p>
+<pre class="r"><code>#baseline test
+test0 &lt;- lm(data = newdep1, DEPMAIN ~ 1)
+summary(test0)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = DEPMAIN ~ 1, data = newdep1)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.05438 -0.05438 -0.05438 -0.05438  0.94562 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 0.054379   0.006028   9.021   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.2268 on 1415 degrees of freedom</code></pre>
+<pre class="r"><code>test1 &lt;- lm(data = newdep1, DEPMAIN ~ SEX.x)
+summary(test1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = DEPMAIN ~ SEX.x, data = newdep1)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.06232 -0.06232 -0.04683 -0.04683  0.95317 
+## 
+## Coefficients:
+##                 Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)     0.046832   0.008417   5.564 3.15e-08 ***
+## SEX.x(2) Female 0.015487   0.012058   1.284    0.199    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.2268 on 1414 degrees of freedom
+## Multiple R-squared:  0.001165,   Adjusted R-squared:  0.0004589 
+## F-statistic:  1.65 on 1 and 1414 DF,  p-value: 0.1992</code></pre>
+<pre class="r"><code>#nothing significant...
+
+test2 &lt;- lm(data = newdep1, DEPMAIN ~ HISCODI3)
+summary(test2)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = DEPMAIN ~ HISCODI3, data = newdep1)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.06138 -0.06138 -0.05386 -0.04703  0.95297 
+## 
+## Coefficients:
+##                                                 Estimate Std. Error
+## (Intercept)                                     0.047030   0.011293
+## HISCODI3(2) Non-Hispanic White                  0.014348   0.014307
+## HISCODI3(3) Non-Hispanic Black                  0.002557   0.018452
+## HISCODI3(4) Non-Hispanic Asian                  0.011110   0.026957
+## HISCODI3(5) Non-Hispanic All other race groups -0.047030   0.057862
+##                                                t value Pr(&gt;|t|)    
+## (Intercept)                                      4.164 3.31e-05 ***
+## HISCODI3(2) Non-Hispanic White                   1.003    0.316    
+## HISCODI3(3) Non-Hispanic Black                   0.139    0.890    
+## HISCODI3(4) Non-Hispanic Asian                   0.412    0.680    
+## HISCODI3(5) Non-Hispanic All other race groups  -0.813    0.416    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.227 on 1411 degrees of freedom
+## Multiple R-squared:  0.001492,   Adjusted R-squared:  -0.001339 
+## F-statistic: 0.527 on 4 and 1411 DF,  p-value: 0.7159</code></pre>
+<pre class="r"><code>#nothing significant...
+
+test3 &lt;-  lm(data = newdep1, DEPMAIN ~ PARENTS)
+summary(test3)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = DEPMAIN ~ PARENTS, data = newdep1)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.12171 -0.03448 -0.03270 -0.03270  0.96730 
+## 
+## Coefficients:
+##                                       Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)                           0.034483   0.012547   2.748  0.00607
+## PARENTS(2) Father, no mother          0.050263   0.031758   1.583  0.11372
+## PARENTS(3) Mother and father         -0.001785   0.015028  -0.119  0.90546
+## PARENTS(4) Neither mother nor father  0.087228   0.017962   4.856 1.33e-06
+##                                         
+## (Intercept)                          ** 
+## PARENTS(2) Father, no mother            
+## PARENTS(3) Mother and father            
+## PARENTS(4) Neither mother nor father ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.2241 on 1412 degrees of freedom
+## Multiple R-squared:  0.02615,    Adjusted R-squared:  0.02408 
+## F-statistic: 12.64 on 3 and 1412 DF,  p-value: 3.739e-08</code></pre>
+<pre class="r"><code>#neither mother nor father is significant?.... hmmm....
+
+test4 &lt;-  lm(data = newdep1, DEPMAIN ~ MOM_ED)
+summary(test4)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = DEPMAIN ~ MOM_ED, data = newdep1)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.08209 -0.05085 -0.03125 -0.02740  0.98592 
+## 
+## Coefficients:
+##                                                      Estimate Std. Error
+## (Intercept)                                           0.05085    0.02567
+## MOM_ED(2) 9-12th grade, no high school diploma       -0.02345    0.03452
+## MOM_ED(3) High school graduate/GED recipient         -0.01960    0.03103
+## MOM_ED(4) Some college, no degree                     0.03124    0.03081
+## MOM_ED(5) AA degree, technical or vocational         -0.03676    0.03474
+## MOM_ED(6) AA degree, academic program                 0.03079    0.03811
+## MOM_ED(7) Bachelor's degree                          -0.01935    0.03107
+## MOM_ED(8) Master's, professional, or doctoral degree -0.05085    0.03497
+##                                                      t value Pr(&gt;|t|)  
+## (Intercept)                                            1.981    0.048 *
+## MOM_ED(2) 9-12th grade, no high school diploma        -0.679    0.497  
+## MOM_ED(3) High school graduate/GED recipient          -0.632    0.528  
+## MOM_ED(4) Some college, no degree                      1.014    0.311  
+## MOM_ED(5) AA degree, technical or vocational          -1.058    0.290  
+## MOM_ED(6) AA degree, academic program                  0.808    0.420  
+## MOM_ED(7) Bachelor's degree                           -0.623    0.534  
+## MOM_ED(8) Master's, professional, or doctoral degree  -1.454    0.146  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.1972 on 702 degrees of freedom
+##   (706 observations deleted due to missingness)
+## Multiple R-squared:  0.0186, Adjusted R-squared:  0.008816 
+## F-statistic: 1.901 on 7 and 702 DF,  p-value: 0.06674</code></pre>
+<pre class="r"><code>#nothing...
+
+test5 &lt;-  lm(data = newdep1, DEPMAIN ~ DAD_ED)
+summary(test5)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = DEPMAIN ~ DAD_ED, data = newdep1)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.14286 -0.05814 -0.04762 -0.00794  0.99206 
+## 
+## Coefficients:
+##                                                       Estimate Std. Error
+## (Intercept)                                           0.047619   0.029821
+## DAD_ED(2) 9-12th grade, no high school diploma        0.005952   0.039450
+## DAD_ED(3) High school graduate/GED recipient         -0.039683   0.034435
+## DAD_ED(4) Some college, no degree                     0.010520   0.036382
+## DAD_ED(5) AA degree, technical or vocational         -0.021303   0.043269
+## DAD_ED(6) AA degree, academic program                 0.095238   0.059642
+## DAD_ED(7) Bachelor's degree                           0.016601   0.035099
+## DAD_ED(8) Master's, professional, or doctoral degree -0.047619   0.038378
+##                                                      t value Pr(&gt;|t|)
+## (Intercept)                                            1.597    0.111
+## DAD_ED(2) 9-12th grade, no high school diploma         0.151    0.880
+## DAD_ED(3) High school graduate/GED recipient          -1.152    0.250
+## DAD_ED(4) Some college, no degree                      0.289    0.773
+## DAD_ED(5) AA degree, technical or vocational          -0.492    0.623
+## DAD_ED(6) AA degree, academic program                  1.597    0.111
+## DAD_ED(7) Bachelor's degree                            0.473    0.636
+## DAD_ED(8) Master's, professional, or doctoral degree  -1.241    0.215
+## 
+## Residual standard error: 0.1933 on 527 degrees of freedom
+##   (881 observations deleted due to missingness)
+## Multiple R-squared:  0.02438,    Adjusted R-squared:  0.01142 
+## F-statistic: 1.881 on 7 and 527 DF,  p-value: 0.07046</code></pre>
+<pre class="r"><code>#Interaction models, just to see...
+test6 &lt;-  lm(data = newdep1, DEPMAIN ~ HISCODI3+SEX.x)
+summary(test6)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = DEPMAIN ~ HISCODI3 + SEX.x, data = newdep1)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.06967 -0.05743 -0.05384 -0.04161  0.96084 
+## 
+## Coefficients:
+##                                                 Estimate Std. Error
+## (Intercept)                                     0.039156   0.012788
+## HISCODI3(2) Non-Hispanic White                  0.014687   0.014305
+## HISCODI3(3) Non-Hispanic Black                  0.002452   0.018447
+## HISCODI3(4) Non-Hispanic Asian                  0.011439   0.026951
+## HISCODI3(5) Non-Hispanic All other race groups -0.047069   0.057847
+## SEX.x(2) Female                                 0.015827   0.012069
+##                                                t value Pr(&gt;|t|)   
+## (Intercept)                                      3.062  0.00224 **
+## HISCODI3(2) Non-Hispanic White                   1.027  0.30473   
+## HISCODI3(3) Non-Hispanic Black                   0.133  0.89425   
+## HISCODI3(4) Non-Hispanic Asian                   0.424  0.67132   
+## HISCODI3(5) Non-Hispanic All other race groups  -0.814  0.41597   
+## SEX.x(2) Female                                  1.311  0.18995   
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.2269 on 1410 degrees of freedom
+## Multiple R-squared:  0.002708,   Adjusted R-squared:  -0.0008284 
+## F-statistic: 0.7658 on 5 and 1410 DF,  p-value: 0.5745</code></pre>
+<pre class="r"><code>#nope
+
+test7 &lt;-  lm(data = newdep1, DEPMAIN ~ HISCODI3+PARENTS)
+summary(test7)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = DEPMAIN ~ HISCODI3 + PARENTS, data = newdep1)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.12823 -0.04398 -0.03840 -0.02669  0.97745 
+## 
+## Coefficients:
+##                                                 Estimate Std. Error
+## (Intercept)                                     0.032264   0.015666
+## HISCODI3(2) Non-Hispanic White                  0.011716   0.014204
+## HISCODI3(3) Non-Hispanic Black                 -0.004139   0.018479
+## HISCODI3(4) Non-Hispanic Asian                  0.009482   0.026780
+## HISCODI3(5) Non-Hispanic All other race groups -0.042664   0.057175
+## PARENTS(2) Father, no mother                    0.048057   0.031877
+## PARENTS(3) Mother and father                   -0.005575   0.015571
+## PARENTS(4) Neither mother nor father            0.084255   0.018171
+##                                                t value Pr(&gt;|t|)    
+## (Intercept)                                      2.059   0.0396 *  
+## HISCODI3(2) Non-Hispanic White                   0.825   0.4096    
+## HISCODI3(3) Non-Hispanic Black                  -0.224   0.8228    
+## HISCODI3(4) Non-Hispanic Asian                   0.354   0.7233    
+## HISCODI3(5) Non-Hispanic All other race groups  -0.746   0.4557    
+## PARENTS(2) Father, no mother                     1.508   0.1319    
+## PARENTS(3) Mother and father                    -0.358   0.7204    
+## PARENTS(4) Neither mother nor father             4.637 3.87e-06 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.2243 on 1408 degrees of freedom
+## Multiple R-squared:  0.02746,    Adjusted R-squared:  0.02262 
+## F-statistic: 5.679 on 7 and 1408 DF,  p-value: 1.737e-06</code></pre>
+<pre class="r"><code>#neither mother nor father is significant again??
+
+test8 &lt;-  lm(data = newdep1, DEPMAIN ~ SEX.x+PARENTS)
+summary(test8)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = DEPMAIN ~ SEX.x + PARENTS, data = newdep1)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.12636 -0.03989 -0.03846 -0.02775  0.97225 
+## 
+## Coefficients:
+##                                       Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)                           0.029177   0.013879   2.102   0.0357
+## SEX.x(2) Female                       0.010712   0.011973   0.895   0.3711
+## PARENTS(2) Father, no mother          0.051756   0.031804   1.627   0.1039
+## PARENTS(3) Mother and father         -0.001427   0.015034  -0.095   0.9244
+## PARENTS(4) Neither mother nor father  0.086473   0.017983   4.809 1.68e-06
+##                                         
+## (Intercept)                          *  
+## SEX.x(2) Female                         
+## PARENTS(2) Father, no mother            
+## PARENTS(3) Mother and father            
+## PARENTS(4) Neither mother nor father ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.2241 on 1411 degrees of freedom
+## Multiple R-squared:  0.0267, Adjusted R-squared:  0.02394 
+## F-statistic: 9.677 on 4 and 1411 DF,  p-value: 1.013e-07</code></pre>
+<pre class="r"><code>#again &quot;neither mother nor father&quot; is the only one that is significant. 
+
+test9 &lt;-  lm(data = newdep1, DEPMAIN ~ HISCODI3*SEX.x)
+summary(test9)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = DEPMAIN ~ HISCODI3 * SEX.x, data = newdep1)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.07317 -0.06286 -0.05975 -0.04167  0.97537 
+## 
+## Coefficients:
+##                                                                Estimate
+## (Intercept)                                                     0.02463
+## HISCODI3(2) Non-Hispanic White                                  0.03823
+## HISCODI3(3) Non-Hispanic Black                                  0.01704
+## HISCODI3(4) Non-Hispanic Asian                                  0.01981
+## HISCODI3(5) Non-Hispanic All other race groups                 -0.02463
+## SEX.x(2) Female                                                 0.04502
+## HISCODI3(2) Non-Hispanic White:SEX.x(2) Female                 -0.04813
+## HISCODI3(3) Non-Hispanic Black:SEX.x(2) Female                 -0.02931
+## HISCODI3(4) Non-Hispanic Asian:SEX.x(2) Female                 -0.01629
+## HISCODI3(5) Non-Hispanic All other race groups:SEX.x(2) Female -0.04502
+##                                                                Std. Error
+## (Intercept)                                                       0.01593
+## HISCODI3(2) Non-Hispanic White                                    0.02003
+## HISCODI3(3) Non-Hispanic Black                                    0.02614
+## HISCODI3(4) Non-Hispanic Asian                                    0.03741
+## HISCODI3(5) Non-Hispanic All other race groups                    0.08183
+## SEX.x(2) Female                                                   0.02259
+## HISCODI3(2) Non-Hispanic White:SEX.x(2) Female                    0.02863
+## HISCODI3(3) Non-Hispanic Black:SEX.x(2) Female                    0.03691
+## HISCODI3(4) Non-Hispanic Asian:SEX.x(2) Female                    0.05397
+## HISCODI3(5) Non-Hispanic All other race groups:SEX.x(2) Female    0.11574
+##                                                                t value
+## (Intercept)                                                      1.546
+## HISCODI3(2) Non-Hispanic White                                   1.909
+## HISCODI3(3) Non-Hispanic Black                                   0.652
+## HISCODI3(4) Non-Hispanic Asian                                   0.530
+## HISCODI3(5) Non-Hispanic All other race groups                  -0.301
+## SEX.x(2) Female                                                  1.993
+## HISCODI3(2) Non-Hispanic White:SEX.x(2) Female                  -1.681
+## HISCODI3(3) Non-Hispanic Black:SEX.x(2) Female                  -0.794
+## HISCODI3(4) Non-Hispanic Asian:SEX.x(2) Female                  -0.302
+## HISCODI3(5) Non-Hispanic All other race groups:SEX.x(2) Female  -0.389
+##                                                                Pr(&gt;|t|)  
+## (Intercept)                                                      0.1224  
+## HISCODI3(2) Non-Hispanic White                                   0.0565 .
+## HISCODI3(3) Non-Hispanic Black                                   0.5147  
+## HISCODI3(4) Non-Hispanic Asian                                   0.5964  
+## HISCODI3(5) Non-Hispanic All other race groups                   0.7635  
+## SEX.x(2) Female                                                  0.0465 *
+## HISCODI3(2) Non-Hispanic White:SEX.x(2) Female                   0.0930 .
+## HISCODI3(3) Non-Hispanic Black:SEX.x(2) Female                   0.4272  
+## HISCODI3(4) Non-Hispanic Asian:SEX.x(2) Female                   0.7628  
+## HISCODI3(5) Non-Hispanic All other race groups:SEX.x(2) Female   0.6973  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.227 on 1406 degrees of freedom
+## Multiple R-squared:  0.004774,   Adjusted R-squared:  -0.001597 
+## F-statistic: 0.7493 on 9 and 1406 DF,  p-value: 0.6637</code></pre>
+<pre class="r"><code>test10 &lt;-  lm(data = newdep1, DEPMAIN ~ HISCODI3+PARENTS)
+summary(test10)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = DEPMAIN ~ HISCODI3 + PARENTS, data = newdep1)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.12823 -0.04398 -0.03840 -0.02669  0.97745 
+## 
+## Coefficients:
+##                                                 Estimate Std. Error
+## (Intercept)                                     0.032264   0.015666
+## HISCODI3(2) Non-Hispanic White                  0.011716   0.014204
+## HISCODI3(3) Non-Hispanic Black                 -0.004139   0.018479
+## HISCODI3(4) Non-Hispanic Asian                  0.009482   0.026780
+## HISCODI3(5) Non-Hispanic All other race groups -0.042664   0.057175
+## PARENTS(2) Father, no mother                    0.048057   0.031877
+## PARENTS(3) Mother and father                   -0.005575   0.015571
+## PARENTS(4) Neither mother nor father            0.084255   0.018171
+##                                                t value Pr(&gt;|t|)    
+## (Intercept)                                      2.059   0.0396 *  
+## HISCODI3(2) Non-Hispanic White                   0.825   0.4096    
+## HISCODI3(3) Non-Hispanic Black                  -0.224   0.8228    
+## HISCODI3(4) Non-Hispanic Asian                   0.354   0.7233    
+## HISCODI3(5) Non-Hispanic All other race groups  -0.746   0.4557    
+## PARENTS(2) Father, no mother                     1.508   0.1319    
+## PARENTS(3) Mother and father                    -0.358   0.7204    
+## PARENTS(4) Neither mother nor father             4.637 3.87e-06 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.2243 on 1408 degrees of freedom
+## Multiple R-squared:  0.02746,    Adjusted R-squared:  0.02262 
+## F-statistic: 5.679 on 7 and 1408 DF,  p-value: 1.737e-06</code></pre>
+<pre class="r"><code>#none of these are showing ANYTHING significant, which is depressing as hell....</code></pre>
+<p>So far this isnt looking great, but I think it’s because the data all has non-continuous data. There are still a few things we can do to this though, like re-leveling our variables and using General Linear Models. So let’s try that! <br>First, let’s try releveling.</p>
+<pre class="r"><code>newdep1$SEX.x &lt;- relevel(newdep1$SEX.x, ref = &quot;(2) Female&quot;)
+m &lt;- lm(data = newdep1, DEPMAIN ~ SEX.x)
+summary(m)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = DEPMAIN ~ SEX.x, data = newdep1)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.06232 -0.06232 -0.04683 -0.04683  0.95317 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    0.062319   0.008634   7.218 8.58e-13 ***
+## SEX.x(1) Male -0.015487   0.012058  -1.284    0.199    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.2268 on 1414 degrees of freedom
+## Multiple R-squared:  0.001165,   Adjusted R-squared:  0.0004589 
+## F-statistic:  1.65 on 1 and 1414 DF,  p-value: 0.1992</code></pre>
+<pre class="r"><code>m1 &lt;- lm(data = newdep1, DEPMAIN ~ SEX.x*HISCODI3)
+summary(m1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = DEPMAIN ~ SEX.x * HISCODI3, data = newdep1)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.07317 -0.06286 -0.05975 -0.04167  0.97537 
+## 
+## Coefficients:
+##                                                               Estimate
+## (Intercept)                                                   0.069652
+## SEX.x(1) Male                                                -0.045021
+## HISCODI3(2) Non-Hispanic White                               -0.009903
+## HISCODI3(3) Non-Hispanic Black                               -0.012275
+## HISCODI3(4) Non-Hispanic Asian                                0.003519
+## HISCODI3(5) Non-Hispanic All other race groups               -0.069652
+## SEX.x(1) Male:HISCODI3(2) Non-Hispanic White                  0.048130
+## SEX.x(1) Male:HISCODI3(3) Non-Hispanic Black                  0.029311
+## SEX.x(1) Male:HISCODI3(4) Non-Hispanic Asian                  0.016295
+## SEX.x(1) Male:HISCODI3(5) Non-Hispanic All other race groups  0.045021
+##                                                              Std. Error
+## (Intercept)                                                    0.016013
+## SEX.x(1) Male                                                  0.022590
+## HISCODI3(2) Non-Hispanic White                                 0.020457
+## HISCODI3(3) Non-Hispanic Black                                 0.026055
+## HISCODI3(4) Non-Hispanic Asian                                 0.038904
+## HISCODI3(5) Non-Hispanic All other race groups                 0.081847
+## SEX.x(1) Male:HISCODI3(2) Non-Hispanic White                   0.028629
+## SEX.x(1) Male:HISCODI3(3) Non-Hispanic Black                   0.036909
+## SEX.x(1) Male:HISCODI3(4) Non-Hispanic Asian                   0.053970
+## SEX.x(1) Male:HISCODI3(5) Non-Hispanic All other race groups   0.115738
+##                                                              t value
+## (Intercept)                                                    4.350
+## SEX.x(1) Male                                                 -1.993
+## HISCODI3(2) Non-Hispanic White                                -0.484
+## HISCODI3(3) Non-Hispanic Black                                -0.471
+## HISCODI3(4) Non-Hispanic Asian                                 0.090
+## HISCODI3(5) Non-Hispanic All other race groups                -0.851
+## SEX.x(1) Male:HISCODI3(2) Non-Hispanic White                   1.681
+## SEX.x(1) Male:HISCODI3(3) Non-Hispanic Black                   0.794
+## SEX.x(1) Male:HISCODI3(4) Non-Hispanic Asian                   0.302
+## SEX.x(1) Male:HISCODI3(5) Non-Hispanic All other race groups   0.389
+##                                                              Pr(&gt;|t|)    
+## (Intercept)                                                  1.46e-05 ***
+## SEX.x(1) Male                                                  0.0465 *  
+## HISCODI3(2) Non-Hispanic White                                 0.6284    
+## HISCODI3(3) Non-Hispanic Black                                 0.6376    
+## HISCODI3(4) Non-Hispanic Asian                                 0.9279    
+## HISCODI3(5) Non-Hispanic All other race groups                 0.3949    
+## SEX.x(1) Male:HISCODI3(2) Non-Hispanic White                   0.0930 .  
+## SEX.x(1) Male:HISCODI3(3) Non-Hispanic Black                   0.4272    
+## SEX.x(1) Male:HISCODI3(4) Non-Hispanic Asian                   0.7628    
+## SEX.x(1) Male:HISCODI3(5) Non-Hispanic All other race groups   0.6973    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.227 on 1406 degrees of freedom
+## Multiple R-squared:  0.004774,   Adjusted R-squared:  -0.001597 
+## F-statistic: 0.7493 on 9 and 1406 DF,  p-value: 0.6637</code></pre>
+<pre class="r"><code>#p-val for F statistic
+
+p &lt;- 1 - pf(1.65, df1 = 1, df2 = 1414)
+p</code></pre>
+<pre><code>## [1] 0.1991693</code></pre>
+<pre class="r"><code>#Still nothing....  </code></pre>
+<p>We’re getting not great P-values so I don’t think we’re using an appropriate model for the data, so let’s try GLM.</p>
+<pre class="r"><code>newdep1$DEPMAIN &lt;- as.numeric(newdep1$DEPMAIN)
+
+glm &lt;- glm(data = newdep1, DEPMAIN ~ SEX.x, family = &quot;binomial&quot;)
+summary(glm)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = DEPMAIN ~ SEX.x, family = &quot;binomial&quot;, data = newdep1)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -0.3587  -0.3587  -0.3097  -0.3097   2.4743  
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)    -2.7111     0.1575  -17.21   &lt;2e-16 ***
+## SEX.x(1) Male  -0.3021     0.2359   -1.28      0.2    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 598.15  on 1415  degrees of freedom
+## Residual deviance: 596.50  on 1414  degrees of freedom
+## AIC: 600.5
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
+<pre class="r"><code>glm1 &lt;- glm(data = newdep1, DEPMAIN ~ HISCODI3, family = &quot;binomial&quot;)
+summary(glm1)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = DEPMAIN ~ HISCODI3, family = &quot;binomial&quot;, data = newdep1)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -0.3559  -0.3559  -0.3325  -0.3104   2.4726  
+## 
+## Coefficients:
+##                                                 Estimate Std. Error
+## (Intercept)                                     -3.00880    0.23501
+## HISCODI3(2) Non-Hispanic White                   0.28143    0.28498
+## HISCODI3(3) Non-Hispanic Black                   0.05563    0.37803
+## HISCODI3(4) Non-Hispanic Asian                   0.22379    0.51728
+## HISCODI3(5) Non-Hispanic All other race groups -13.55726  599.88623
+##                                                z value Pr(&gt;|z|)    
+## (Intercept)                                    -12.803   &lt;2e-16 ***
+## HISCODI3(2) Non-Hispanic White                   0.988    0.323    
+## HISCODI3(3) Non-Hispanic Black                   0.147    0.883    
+## HISCODI3(4) Non-Hispanic Asian                   0.433    0.665    
+## HISCODI3(5) Non-Hispanic All other race groups  -0.023    0.982    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 598.15  on 1415  degrees of freedom
+## Residual deviance: 595.17  on 1411  degrees of freedom
+## AIC: 605.17
+## 
+## Number of Fisher Scoring iterations: 15</code></pre>
 
 
 
