@@ -10,7 +10,9 @@ output:
 ---
 #Introduction to My Project
 
-<br> My project topic for this semester was depression. Depression is something that I've struggled with since high school, and I wanted to use this project to learn some more about it. I won't be talking about everything that I've learned and done research on (because this project covered a really large amount of ground), so today I'm simply going to focus on the epidemiology of depression, as well as my own original study that I have been working on during the semester (that has to do with depression epidemiology). 
+<br> My project topic for this semester was depression. Depression is something that I've struggled with since high school, and I wanted to use this project to learn some more about it. I won't be talking about everything that I've learned and done research on (because this project covered a really large amount of ground), so today I'm simply going to focus on the epidemiology of depression, as well as my own original study that I have been working on during the semester (that has to do with depression epidemiology).
+
+
 ![](d6_0.jpg)
 
 #Epidemiology 
@@ -31,6 +33,7 @@ output:
 <br>So, waaaay back when we were assigned to do a mini study with real data, I took it a bit to the next level. The question I asked was: Among adolescents, is there a specific factor (i.e. race, gender, socioeconomical) that makes these kids more prone to depression. I used the data that I found to look at this question, and was actually able to do a couple of really neat things with it using R. In fact, I made this entire HTML presentation in R! So now, I'll take you through a bit of a step-by-step walkthrough of  what I did. And yes, I will explain what you're looking at in layman's terms because I know you guys aren't too big on statistics. 
 
 ![](download.jpeg)
+
 ##The first steps I took
 
 <br>I downloaded the data in an R data format directly off the [online data repository] (http://www.icpsr.umich.edu/icpsrweb/ICPSR/studies/36147?q=depression+adolescents&searchSource=find-analyze-home&dataFormat%5B0%5D=R&sortBy=&keyword%5B0%5D=mental+health&geography%5B0%5D=United+States&groupResults=false) I found it on. In this first code chunk, I am loading that data in to R. As you see, I am pulling data from four different datasets in to this study, because the data was split up in to several different data frames (this is because it is a LOT of data). 
@@ -194,13 +197,20 @@ In the interest of time, I'll stop doing linear models here, and talk about wher
 
 #Conclusions/Next Steps
 <br> So, already I think I can see a few conclusions from this data that bring up some new qurstions and public policy suggestions: 
+
 * First off, you would think that there would be a gender correlation with depression. Why isn't this happening in the data that I found? Does that mean that we don't have to watch out more for depression in adolescent girls in policy changes? 
+
 * Second, you would also think that there would be a racial correlation with depression from my data. Why isn't there? Could this mean that we also dont have to watch out more for depression in minority kids? 
+
 * Finally, out of everone, the only group with significant correlation to depression is kids without parents. Since the study only differentiated between kids with both parents, one parent, and no parents, how can we know if them being parentless arose from a traumatic condition or not? Should we resample this specific population to find out more, or could we work with schools and child services to inform them of this correlation? It's really up in the air as of right now how to take this on from a public policy standpoint. 
 
 <br> What I've done so far I'm pretty proud of! But there is still some other analyses that I want to do, that I hope will turn in to something bigger. My next steps that I will take with this data are: 
+
 * Residuals! Saving the residuals from a linear model can be useful, because they can tell you if there is an outside variable influencing your data that you're not seeing. I want to look at these residuals and see if they're normal or not. 
+
 * Again with the residuals, I can also use them to adjust for "neither mother nor father", and look to see if in this population of kids who don't live with either their mother or father there are significant correlations between race and sex. 
+
 * I could also just explore the correlation between kids with no parents more in general...
+
 * More variables! There are more variables that I can look at to see if there's correlation between them and depression (such as income and socioeconomic class), but it's just a matter of getting them in to the data frame correctly. 
 
